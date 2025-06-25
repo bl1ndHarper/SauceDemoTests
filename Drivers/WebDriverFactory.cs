@@ -1,27 +1,10 @@
 ﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Firefox;
 
 namespace SauceDemoTests.Drivers
 {
-    public interface IBrowserStrategy
+    public static class WebDriverFactory
     {
-        IWebDriver GetDriver();
-    }
-
-    public class ChromeStrategy : IBrowserStrategy
-    {
-        public IWebDriver GetDriver() => new ChromeDriver();
-    }
-
-    public class FirefoxStrategy : IBrowserStrategy
-    {
-        public IWebDriver GetDriver() => new FirefoxDriver();
-    }
-
-    public class WebDriverFactory
-    {
-        private static IWebDriver _driver;
+        private static IWebDriver? _driver;
 
         public static IWebDriver GetDriver(string browser)
         {
@@ -30,7 +13,8 @@ namespace SauceDemoTests.Drivers
             IBrowserStrategy strategy = browser.ToLower() switch
             {
                 "chrome" => new ChromeStrategy(),
-                _ => throw new ArgumentException("Unsupported browser")
+                "firefox" => new FirefoxStrategy(),
+                _ => throw new ArgumentException($"Unsupported browser: {browser}")
             };
 
             _driver = strategy.GetDriver();
